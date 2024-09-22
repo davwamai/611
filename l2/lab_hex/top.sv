@@ -38,8 +38,8 @@ module top (
   assign val1 = SW[7:4];       // SW[7:4] -> HEX1
   assign val2 = SW[11:8];      // SW[11:8] -> HEX2
   assign val3 = SW[15:12];     // SW[15:12] -> HEX3
+  assign val4 = SW[17:16];     // SW[17:16] -> HEX4
 
-  assign val4 = 4'h0;
   assign val5 = 4'h0;
   assign val6 = 4'h0;
   assign val7 = 4'h0;
