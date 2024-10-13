@@ -4,7 +4,7 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
     initial $readmemh("program.rom",inst_ram);
 
     logic [11:0] PC_FETCH = 12'd0;
-    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX;
+    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, 31mux0, 31mux1, 31mux2, R_EX;
     logic [3:0] aluop_EX;
     logic [4:0] regdest_WB;
     logic [1:0] regsel_EX, regsel_WB;
@@ -38,6 +38,7 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
     );
 
     controlunit cu_inst (
+      .clk(clk),
       .opcode(instruction_EX[6:0]),
       .funct3(instruction_EX[14:12]),
       .funct7(instruction_EX[31:25]),
@@ -49,7 +50,7 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
       .aluop_EX(aluop_EX) // output to ALU
     );
 
-    pipeline_register #(.WIDTH(1)) regwrite_to_we_inst(
+    pipline_register #(.WIDTH(1)) regwrite_to_we_inst(
         .clk(clk),
         .in(regwrite_EX),
         .out(regwrite_WB)
@@ -64,19 +65,19 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
     pipeline_register #(.WIDTH(32)) to_31mux0(
       .clk(clk),
       .in(GPIO_in),
-      .out(mux310)
+      .out(31mux0)
     );
 
     pipeline_register #(.WIDTH(32)) to_31mux1(
       .clk(clk),
       .in({instruction_EX[31:12], 12'd0}),
-      .out(mux311)
+      .out(31mux1)
     );
 
     pipeline_register #(.WIDTH(32)) to_31mux2(
       .clk(clk),
       .in(R_EX),
-      .out(mux312)
+      .out(31mux2)
     );
 
     pipeline_register #(.WIDTH(5)) regdest_to_regfile_inst(
@@ -86,10 +87,10 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
     );
 
     mux31 mux31_inst (
-      .a(mux310),
-      .b(mux311),
-      .c(mux312),
-      .s(regsel_WB),
+      .a(31mux0),
+      .b(31mux1),
+      .c(31mux2),
+      .s(regsel_WB)
       .d(writedata_WB)
     );
 

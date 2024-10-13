@@ -31,66 +31,30 @@ module top (
 	output		     [6:0]		HEX7
 );
 
+  logic [3:0] val0, val1, val2, val3;
+  logic [3:0] val4, val5, val6, val7;
 
+  assign val0 = SW[3:0];       // SW[3:0] -> HEX0
+  assign val1 = SW[7:4];       // SW[7:4] -> HEX1
+  assign val2 = SW[11:8];      // SW[11:8] -> HEX2
+  assign val3 = SW[15:12];     // SW[15:12] -> HEX3
+  assign val4 = SW[17:16];     // SW[17:16] -> HEX4
 
-//=======================================================
-//  REG/WIRE declarations
-//=======================================================
+  assign val5 = 4'h0;
+  assign val6 = 4'h0;
+  assign val7 = 4'h0;
 
-	/* 24 bit clock divider, converts 50MHz clock signal to 2.98Hz */
-	logic [23:0] clkdiv;
-	logic ledclk;
-	assign ledclk = clkdiv[23];
-
-	/* driver for LEDs */
-	logic [25:0] leds;
-	assign LEDR = leds[25:8];
-	assign LEDG = leds[7:0];
-
-	/* LED state register, 0 means going left, 1 means going right */
-	logic ledstate;
-
-
-//=======================================================
-//  Behavioral coding
-//=======================================================
-
-
-	initial begin
-		clkdiv = 26'h0;
-		/* start at the far right, LEDG0 */
-		leds = 26'b1;
-		/* start out going to the left */
-		ledstate = 1'b0;
-	end
-
-	always @(posedge CLOCK_50) begin
-		/* drive the clock divider, every 2^26 cycles of CLOCK_50, the
-		* top bit will roll over and give us a clock edge for clkdiv
-		* */
-		clkdiv <= clkdiv + 1;
-	end
-
-	always @(posedge ledclk) begin
-		/* going left and we are at the far left, time to turn around */
-		if ( (ledstate == 0) && (leds == 26'b10000000000000000000000000) ) begin
-			ledstate <= 1;
-			leds <= leds >> 1;
-
-		/* going left and not at the far left, keep going */
-		end else if (ledstate == 0) begin
-			ledstate <= 0;
-			leds <= leds << 1;
-
-		/* going right and we are at the far right, turn around */
-		end else if ( (ledstate == 1) && (leds == 26'b1) ) begin
-			ledstate <= 0;
-			leds <= leds << 1;
-
-		/* going right, and we aren't at the far right */
-		end else begin
-			leds <= leds >> 1;
-		end
-	end
+  hexdriver hd0 (.val(val0), .HEX(HEX0));
+  hexdriver hd1 (.val(val1), .HEX(HEX1));
+  hexdriver hd2 (.val(val2), .HEX(HEX2));
+  hexdriver hd3 (.val(val3), .HEX(HEX3));
+  hexdriver hd4 (.val(val4), .HEX(HEX4));
+  hexdriver hd5 (.val(val5), .HEX(HEX5));
+  hexdriver hd6 (.val(val6), .HEX(HEX6));
+  hexdriver hd7 (.val(val7), .HEX(HEX7));
+  
+  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0:0]), .GPIO_in({val0, val1, val2, val3, val4, val5, val6, val7}), .GPIO_out());
 
 endmodule
+
+
