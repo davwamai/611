@@ -53,7 +53,7 @@ module top (
   hexdriver hd6 (.val(val6), .HEX(HEX6));
   hexdriver hd7 (.val(val7), .HEX(HEX7));
   
-  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0:0]), .GPIO_in({val0, val1, val2, val3, val4, val5, val6, val7}), .GPIO_out());
+  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in({val0, val1, val2, val3, val4, val5, val6, val7}), .io2_out());
 
 endmodule
 

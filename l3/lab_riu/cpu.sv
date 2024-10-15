@@ -1,10 +1,10 @@
-module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, output logic [31:0] GPIO_out);
+module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output logic [31:0] io2_out);
 
     logic [31:0] inst_ram [4095:0];
     initial $readmemh("program.rom",inst_ram);
 
     logic [11:0] PC_FETCH = 12'd0;
-    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX;
+    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX, s_extend_EX;
     logic [3:0] aluop_EX;
     logic [4:0] regdest_WB;
     logic [1:0] regsel_EX, regsel_WB;
@@ -22,9 +22,14 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
       .readdata2(rd2_EX) // output to sign extension mux then ALU
     );
 
+    sign_extend sign_extend_inst (
+      .in(instruction_EX[31:20]),
+      .out(s_extend_EX)
+    );
+
     mux21 rf_to_alu_mux_inst (
       .a(rd2_EX),
-      .b(),
+      .b(s_extend_EX),
       .s(alusrc_EX),
       .c(m_to_alu_EX)
     );
@@ -63,7 +68,7 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] GPIO_in, outpu
 
     pipeline_register #(.WIDTH(32)) to_31mux0(
       .clk(clk),
-      .in(GPIO_in),
+      .in(io0_in),
       .out(mux310)
     );
 
