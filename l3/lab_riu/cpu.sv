@@ -4,11 +4,11 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output
     initial $readmemh("program.rom",inst_ram);
 
     logic [11:0] PC_FETCH = 12'd0;
-    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX, s_extend_EX;
+    logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX, s_extend_EX, writedata_WB;
     logic [3:0] aluop_EX;
     logic [4:0] regdest_WB;
     logic [1:0] regsel_EX, regsel_WB;
-    logic alusrc_EX, GPIO_we, GPIO_we_WB, regwrite_EX, regwrite_WB, writedata_WB;
+    logic alusrc_EX, GPIO_we, regwrite_EX, regwrite_WB;
 
     // regfile instance
     regfile rf_inst (

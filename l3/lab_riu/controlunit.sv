@@ -11,6 +11,11 @@ module controlunit (
     output logic [3:0] aluop_EX
 );
 
+localparam OPCODE_R_TYPE = 7'h33;
+localparam OPCODE_I_TYPE = 7'h13;
+localparam OPCODE_U_TYPE = 7'h37;
+localparam OPCODE_CSRRW = 7'h73;
+
     always_comb begin
         // default values for out signals
         aluop_EX     = 4'b0000;
@@ -21,7 +26,7 @@ module controlunit (
 
         // based on opcode, funct3, funct7, etc.
         case (opcode)
-            7'h33: begin // R-type instructions
+            OPCODE_R_TYPE: begin // R-type instructions
                 case (funct3)
                     3'b000: begin
                         if (funct7 == 7'h0) begin
@@ -55,6 +60,22 @@ module controlunit (
                             GPIO_we  = 1'b0;
                         end
                     end
+                    3'b011: begin
+                        if (funct7 == 7'h0) begin
+                            aluop_EX    = 4'b1101; // ALU operation for SLTU
+                            alusrc_EX   = 1'b0;
+                            regsel_EX   = 2'b10;
+                            regwrite_EX = 1'b1;
+                            GPIO_we  = 1'b0;
+                        end
+                        if (funct7 == 7'h1) begin
+                            aluop_EX    = 4'b0111; // ALU operation for MULHU
+                            alusrc_EX   = 1'b0;
+                            regsel_EX   = 2'b10;
+                            regwrite_EX = 1'b1;
+                            GPIO_we  = 1'b0;
+                        end
+                    end
                     3'b111: begin // AND
                         if (funct7 == 7'h0) begin
                             aluop_EX    = 4'b0000; // ALU operation for AND
@@ -64,9 +85,52 @@ module controlunit (
                             GPIO_we  = 1'b0;
                         end
                     end
-                    3'b001: begin // SLL
+                    3'b110: begin // OR
+                        if (funct7 == 7'h0) begin
+                            aluop_EX    = 4'b0001; // ALU operation for OR
+                            alusrc_EX   = 1'b0;
+                            regsel_EX   = 2'b10;
+                            regwrite_EX = 1'b1;
+                            GPIO_we  = 1'b0;
+                        end
+                    end
+                    3'b100: begin // XOR
+                        if (funct7 == 7'h0) begin
+                            aluop_EX    = 4'b0010; // ALU operation for XOR
+                            alusrc_EX   = 1'b0;
+                            regsel_EX   = 2'b10;
+                            regwrite_EX = 1'b1;
+                            GPIO_we  = 1'b0;
+                        end
+                    end
+                    3'b101: begin // SRL, SRA
+                        case (funct7)
+                            7'h00: begin // SRL
+                                aluop_EX    = 4'b1001; // ALU operation for SRL
+                                alusrc_EX   = 1'b0;
+                                regsel_EX   = 2'b10;
+                                regwrite_EX = 1'b1;
+                                GPIO_we  = 1'b0;
+                            end
+                            7'h20: begin // SRA
+                                aluop_EX    = 4'b1010; // ALU operation for SRA
+                                alusrc_EX   = 1'b0;
+                                regsel_EX   = 2'b10;
+                                regwrite_EX = 1'b1;
+                                GPIO_we  = 1'b0;
+                            end
+                        endcase
+                    end
+                    3'b001: begin
                         if (funct7 == 7'h0) begin
                             aluop_EX    = 4'b1000; // ALU operation for SLL
+                            alusrc_EX   = 1'b0;
+                            regsel_EX   = 2'b10;
+                            regwrite_EX = 1'b1;
+                            GPIO_we  = 1'b0;
+                        end
+                        if (funct7 == 7'h1) begin
+                            aluop_EX    = 4'b0110; // ALU operation for MULH
                             alusrc_EX   = 1'b0;
                             regsel_EX   = 2'b10;
                             regwrite_EX = 1'b1;
@@ -76,8 +140,15 @@ module controlunit (
                 endcase
             end
 
-            7'h13: begin // I-type instructions
+            OPCODE_I_TYPE: begin // I-type instructions
                 case (funct3)
+                    3'b000: begin // ADDI
+                        aluop_EX    = 4'b0011; // ALU operation for ADDI
+                        alusrc_EX   = 1'b1;    // Immediate source for ALU
+                        regsel_EX   = 2'b10;
+                        regwrite_EX = 1'b1;
+                        GPIO_we  = 1'b0;
+                    end
                     3'b111: begin // ANDI
                         aluop_EX    = 4'b0000; // ALU operation for ANDI
                         alusrc_EX   = 1'b1;    // Immediate source for ALU
@@ -92,9 +163,66 @@ module controlunit (
                         regwrite_EX = 1'b1;
                         GPIO_we  = 1'b0;
                     end
+                    3'b110: begin // ORI
+                        aluop_EX    = 4'b0001; // ALU operation for ORI
+                        alusrc_EX   = 1'b1;    // Immediate source for ALU
+                        regsel_EX   = 2'b10;
+                        regwrite_EX = 1'b1;
+                        GPIO_we  = 1'b0;
+                    end
+                    3'b100: begin // XORI
+                        aluop_EX    = 4'b0010; // ALU operation for XORI
+                        alusrc_EX   = 1'b1;    // Immediate source for ALU
+                        regsel_EX   = 2'b10;
+                        regwrite_EX = 1'b1;
+                        GPIO_we  = 1'b0;
+                    end
+                    3'b101: begin // SRLI, SRAI
+                        case (funct7)
+                            7'h00: begin // SRLI
+                                aluop_EX    = 4'b1001; // ALU operation for SRLI
+                                alusrc_EX   = 1'b1;    // Immediate source for ALU
+                                regsel_EX   = 2'b10;
+                                regwrite_EX = 1'b1;
+                                GPIO_we  = 1'b0;
+                            end
+                            7'h20: begin // SRAI
+                                aluop_EX    = 4'b1010; // ALU operation for SRAI
+                                alusrc_EX   = 1'b1;    // Immediate source for ALU
+                                regsel_EX   = 2'b10;
+                                regwrite_EX = 1'b1;
+                                GPIO_we  = 1'b0;
+                            end
+                        endcase
+                    end
                 endcase
             end
-            // more cases for other opcodes and funct3 values
+
+            OPCODE_CSRRW: begin // CSRRW instructions
+                case (csr)
+                    7'hf02: begin // HEX displays (io2)
+                        aluop_EX    = 4'bX;
+                        alusrc_EX   = 1'bX;
+                        regsel_EX   = 2'bX;
+                        regwrite_EX = 1'b0;
+                        GPIO_we  = 1'b1;
+                    end
+                    7'hf00: begin // switches (io0)
+                        aluop_EX    = 4'bX;
+                        alusrc_EX   = 1'bX;
+                        regsel_EX   = 2'b00;
+                        regwrite_EX = 1'b1;
+                        GPIO_we  = 1'b0;
+                    end
+                endcase
+            end
+            OPCODE_U_TYPE: begin // lui
+                aluop_EX    = 4'bX;
+                alusrc_EX   = 1'bX;
+                regsel_EX   = 2'b01;
+                regwrite_EX = 1'b1;
+                GPIO_we  = 1'b0;
+            end
         endcase
     end
 endmodule
