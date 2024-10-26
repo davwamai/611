@@ -1,7 +1,7 @@
 module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output logic [31:0] io2_out);
 
     logic [31:0] inst_ram [4095:0];
-    initial $readmemh("program.rom",inst_ram);
+    initial $readmemh("bin2dec.rom",inst_ram);
 
     logic [11:0] PC_FETCH = 12'd0;
     logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX, s_extend_EX, writedata_WB;
@@ -60,7 +60,7 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output
         .out(regwrite_WB)
     );
 
-    pipeline_register #(.WIDTH(32)) regsel_to_mux(
+    pipeline_register #(.WIDTH(2)) regsel_to_mux(
       .clk(clk),
       .in(regsel_EX),
       .out(regsel_WB)
@@ -89,7 +89,14 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output
       .in(instruction_EX[11:7]),
       .out(regdest_WB)
     );
-
+    
+    en_pipeline_register #(.WIDTH(32)) to_GPIO_out(
+        .in(rd1_EX),
+        .clk(clk),
+        .en(GPIO_we),
+        .out(io2_out)
+    );
+    
     mux31 mux31_inst (
       .a(mux310),
       .b(mux311),

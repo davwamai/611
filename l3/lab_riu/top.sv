@@ -31,29 +31,20 @@ module top (
 	output		     [6:0]		HEX7
 );
 
-  logic [3:0] val0, val1, val2, val3;
-  logic [3:0] val4, val5, val6, val7;
+  logic [31:0] io0, io2;
 
-  assign val0 = SW[3:0];       // SW[3:0] -> HEX0
-  assign val1 = SW[7:4];       // SW[7:4] -> HEX1
-  assign val2 = SW[11:8];      // SW[11:8] -> HEX2
-  assign val3 = SW[15:12];     // SW[15:12] -> HEX3
-  assign val4 = SW[17:16];     // SW[17:16] -> HEX4
+  assign io0 = {14'b0, SW};
 
-  assign val5 = 4'h0;
-  assign val6 = 4'h0;
-  assign val7 = 4'h0;
+  hexdriver hd0 (.val(io2[3:0]), .HEX(HEX0));
+  hexdriver hd1 (.val(io2[7:4]), .HEX(HEX1));
+  hexdriver hd2 (.val(io2[11:8]), .HEX(HEX2));
+  hexdriver hd3 (.val(io2[15:12]), .HEX(HEX3));
+  hexdriver hd4 (.val(io2[19:16]), .HEX(HEX4));
+  hexdriver hd5 (.val(io2[23:20]), .HEX(HEX5));
+  hexdriver hd6 (.val(io2[27:24]), .HEX(HEX6));
+  hexdriver hd7 (.val(io2[31:28]), .HEX(HEX7));
 
-  hexdriver hd0 (.val(val0), .HEX(HEX0));
-  hexdriver hd1 (.val(val1), .HEX(HEX1));
-  hexdriver hd2 (.val(val2), .HEX(HEX2));
-  hexdriver hd3 (.val(val3), .HEX(HEX3));
-  hexdriver hd4 (.val(val4), .HEX(HEX4));
-  hexdriver hd5 (.val(val5), .HEX(HEX5));
-  hexdriver hd6 (.val(val6), .HEX(HEX6));
-  hexdriver hd7 (.val(val7), .HEX(HEX7));
-  
-  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in({val0, val1, val2, val3, val4, val5, val6, val7}), .io2_out());
+  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in(io0), .io2_out(i02));
 
 endmodule
 

@@ -200,14 +200,14 @@ localparam OPCODE_CSRRW = 7'h73;
 
             OPCODE_CSRRW: begin // CSRRW instructions
                 case (csr)
-                    7'hf02: begin // HEX displays (io2)
+                    12'hf02: begin // HEX displays (io2)
                         aluop_EX    = 4'bX;
                         alusrc_EX   = 1'bX;
                         regsel_EX   = 2'bX;
                         regwrite_EX = 1'b0;
                         GPIO_we  = 1'b1;
                     end
-                    7'hf00: begin // switches (io0)
+                    12'hf00: begin // switches (io0)
                         aluop_EX    = 4'bX;
                         alusrc_EX   = 1'bX;
                         regsel_EX   = 2'b00;
