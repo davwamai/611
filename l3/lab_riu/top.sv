@@ -31,9 +31,7 @@ module top (
 	output		     [6:0]		HEX7
 );
 
-  logic [31:0] io0, io2;
-
-  assign io0 = {14'b0, SW};
+  logic [31:0] io2;
 
   hexdriver hd0 (.val(io2[3:0]), .HEX(HEX0));
   hexdriver hd1 (.val(io2[7:4]), .HEX(HEX1));
@@ -44,7 +42,7 @@ module top (
   hexdriver hd6 (.val(io2[27:24]), .HEX(HEX6));
   hexdriver hd7 (.val(io2[31:28]), .HEX(HEX7));
 
-  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in(io0), .io2_out(i02));
+  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in({14'b0, SW[17:0]}), .io2_out(io2));
 
 endmodule
 
