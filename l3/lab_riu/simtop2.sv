@@ -67,16 +67,15 @@ module simtop2;
         expected_regs[8]  = 1;
     end
 
-    // Wait for program completion and check results
     initial begin
         // Wait for the program to complete
         repeat (10000) @(posedge clk);
         #10;
         check_results();
+        $display("------ Simulation complete. ------");
         $finish;
     end
 
-    // Task to check results
     task check_results;
         automatic int errors = 0;
         begin
@@ -84,7 +83,7 @@ module simtop2;
             foreach (reg_indices[i]) begin
                 automatic int idx = reg_indices[i];
                 if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
-                    $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d", 
+                    $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d",
                              idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
                     errors++;
                 end else begin
