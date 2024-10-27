@@ -15,7 +15,7 @@ module simtop;
 		//////////// CLOCK //////////
 		.CLOCK_50(clk),
 		.CLOCK2_50(),
-	    .CLOCK3_50(),
+	  .CLOCK3_50(),
 
 		//////////// LED //////////
 		.LEDG(),
@@ -55,19 +55,6 @@ module simtop;
 	
 	// assign simulated switch values
 	assign SW = 18'd12345;
-  assign io0 = {14'b0, SW};
-
-  hexdriver hd0 (.val(io2[3:0]), .HEX(HEX0));
-  hexdriver hd1 (.val(io2[7:4]), .HEX(HEX1));
-  hexdriver hd2 (.val(io2[11:8]), .HEX(HEX2));
-  hexdriver hd3 (.val(io2[15:12]), .HEX(HEX3));
-  hexdriver hd4 (.val(io2[19:16]), .HEX(HEX4));
-  hexdriver hd5 (.val(io2[23:20]), .HEX(HEX5));
-  hexdriver hd6 (.val(io2[27:24]), .HEX(HEX6));
-  hexdriver hd7 (.val(io2[31:28]), .HEX(HEX7));
-
-  cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in(io0), .io2_out(i02));
-
 
 endmodule
 
