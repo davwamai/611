@@ -38,27 +38,31 @@ module simtop2;
 		.HEX7(HEX7)
 	);
 
-    // pulse reset (active low)
+    // Pulse reset (active low)
     initial begin
-      KEY <= 4'he;
-      #10;
-      KEY <= 4'hf;
+        KEY <= 4'he;
+        #10;
+        KEY <= 4'hf;
     end
 
-    // drive clock
+    // Drive clock
     always begin
-      clk <= 1'b0; #5;
-      clk <= 1'b1; #5;
+        clk <= 1'b0; #5;
+        clk <= 1'b1; #5;
     end
 
     // Initialize switches
-    initial SW = 18'd123456;
+    initial begin
+        SW = 18'd123456;
+    end
 
     // Define expected register values
     logic [31:0] expected_regs [0:31];
+    int i;
+
     initial begin
         // Initialize all expected register values to zero
-        for (int i = 0; i < 32; i++) begin
+        for (i = 0; i < 32; i = i + 1) begin
             expected_regs[i] = 32'd0;
         end
         // Set expected values
@@ -70,16 +74,30 @@ module simtop2;
         expected_regs[8]  = 1;
     end
 
-    final begin
+    // Variables for checking
+    int errors;
+    int reg_indices [0:5];
+
+    initial begin
+        #100000;
         $display("------ Simulation complete. ------");
-        automatic int errors = 0;
-        automatic int reg_indices[] = '{8, 9, 18, 19, 20, 21};
-        foreach (reg_indices[i]) begin
-            automatic int idx = reg_indices[i];
+        errors = 0;
+
+        // Initialize reg_indices
+        reg_indices[0] = 8;
+        reg_indices[1] = 9;
+        reg_indices[2] = 18;
+        reg_indices[3] = 19;
+        reg_indices[4] = 20;
+        reg_indices[5] = 21;
+
+        for (i = 0; i < 6; i = i + 1) begin
+            int idx;
+            idx = reg_indices[i];
             if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
                 $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d",
-                          idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
-                errors++;
+                         idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
+                errors = errors + 1;
             end else begin
                 $display("Register x%0d OK. Value: %0d", idx, dut.cpu_inst.rf_inst.mem[idx]);
             end
@@ -91,6 +109,7 @@ module simtop2;
             $display("TEST FAILED: %0d errors detected.", errors);
             $stop; // Stop simulation on failure
         end
+
+        $finish; // End the simulation
     end
 endmodule
-
