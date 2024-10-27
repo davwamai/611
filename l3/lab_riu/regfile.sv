@@ -24,7 +24,8 @@ always_ff @(posedge clk) begin
 end
 
 always_comb begin
-	$monitor("reg 6: %8h", mem[6]);
+	//$monitor("reg 6: %8h", mem[6]);
+  $monitor("D0: %8d, D1: %8d, D2: %8d, D3: %8d, D4: %8d, D5: %8d", mem[8], mem[9], mem[18], mem[19], mem[20], mem[21]);
 	//$monitor("reg 5: %8h", mem[5]);
 	//$monitor("writeaddr: %8h, we: %1h", writeaddr, we);
 
