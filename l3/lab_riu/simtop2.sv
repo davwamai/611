@@ -74,7 +74,7 @@ module simtop2;
         $display("------ Simulation complete. ------");
         automatic int errors = 0;
         begin
-            automatic int reg_indices[] = '{8, 9, 18, 19, 20, 21};
+            automatic int reg_indices[] = {8, 9, 18, 19, 20, 21};
             foreach (reg_indices[i]) begin
                 automatic int idx = reg_indices[i];
                 if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
