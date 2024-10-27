@@ -45,5 +45,3 @@ module top (
   cpu cpu_inst(.clk(CLOCK_50), .rst_n(KEY[0]), .io0_in({14'b0, SW[17:0]}), .io2_out(io2));
 
 endmodule
-
-
