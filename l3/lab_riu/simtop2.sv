@@ -70,7 +70,7 @@ module simtop2;
     // Wait for program completion and check results
     initial begin
         // Wait for the program to complete
-        wait (dut.cpu_inst.rf_inst.mem[8] === 4'b1);
+        repeat (10000) @(posedge clk);
         #10;
         check_results();
         $finish;
