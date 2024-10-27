@@ -3,7 +3,8 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output
     logic [31:0] inst_ram [4095:0];
     initial $readmemh("bin2dec.rom",inst_ram);
 
-    logic [11:0] PC_FETCH = 12'd0;
+    //logic [11:0] PC_FETCH = 12'd0;
+    logic [11:0] PC_FETCH;
     logic [31:0] instruction_EX, rd1_EX, rd2_EX, m_to_alu_EX, mux310, mux311, mux312, R_EX, s_extend_EX, writedata_WB;
     logic [3:0] aluop_EX;
     logic [4:0] regdest_WB;
