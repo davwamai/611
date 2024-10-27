@@ -64,11 +64,11 @@ module simtop2;
         end
         // expected values
         expected_regs[21] = 1;
-        expected_regs[20] = 2;
-        expected_regs[19] = 3;
-        expected_regs[18] = 4;
-        expected_regs[9]  = 5;
-        expected_regs[8]  = 6;
+        expected_regs[20] = 7;
+        expected_regs[19] = 9;
+        expected_regs[18] = 6;
+        expected_regs[9]  = 8;
+        expected_regs[8]  = 5;
     end
 
     int errors;
