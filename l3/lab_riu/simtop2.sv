@@ -38,14 +38,17 @@ module simtop2;
 		.HEX7(HEX7)
 	);
 
-    // Clock generation
-    initial clk = 0;
-    always #5 clk = ~clk; // 100 MHz clock
-
+    // pulse reset (active low)
     initial begin
-        KEY = 4'b1110; // Assert reset
-        #20;
-        KEY = 4'b1111; // Deassert reset
+      KEY <= 4'he;
+      #10;
+      KEY <= 4'hf;
+    end
+
+    // drive clock
+    always begin
+      clk <= 1'b0; #5;
+      clk <= 1'b1; #5;
     end
 
     // Initialize switches
@@ -67,13 +70,9 @@ module simtop2;
         expected_regs[8]  = 1;
     end
 
-    initial begin
-        // Wait for the program to complete
-        repeat (10000) @(posedge clk);
-        #10;
-        check_results();
+    final begin
         $display("------ Simulation complete. ------");
-        $finish;
+        check_results();
     end
 
     task check_results;
