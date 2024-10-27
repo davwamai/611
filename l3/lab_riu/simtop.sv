@@ -55,7 +55,6 @@ module simtop;
 	
 	// assign simulated switch values
 	assign SW = 18'd12345;
-  $display("Register 6: %8h", top.cpu.regfile.mem[6]);
 
 endmodule
 
