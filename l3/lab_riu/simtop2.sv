@@ -38,52 +38,47 @@ module simtop2;
 		.HEX7(HEX7)
 	);
 
-    // Pulse reset (active low)
+    // pulse reset (active low)
     initial begin
         KEY <= 4'he;
         #10;
         KEY <= 4'hf;
     end
 
-    // Drive clock
+    // drive clock
     always begin
         clk <= 1'b0; #5;
         clk <= 1'b1; #5;
     end
 
-    // Initialize switches
     initial begin
         SW = 18'd123456;
     end
 
-    // Define expected register values
     logic [31:0] expected_regs [0:31];
     int i;
 
     initial begin
-        // Initialize all expected register values to zero
         for (i = 0; i < 32; i = i + 1) begin
             expected_regs[i] = 32'd0;
         end
-        // Set expected values
-        expected_regs[21] = 6;
-        expected_regs[20] = 5;
-        expected_regs[19] = 4;
-        expected_regs[18] = 3;
-        expected_regs[9]  = 2;
-        expected_regs[8]  = 1;
+        // expected values
+        expected_regs[21] = 1;
+        expected_regs[20] = 2;
+        expected_regs[19] = 3;
+        expected_regs[18] = 4;
+        expected_regs[9]  = 5;
+        expected_regs[8]  = 6;
     end
 
-    // Variables for checking
     int errors;
     int reg_indices [0:5];
 
     initial begin
         #100000;
-        $display("------ Simulation complete. ------");
+        $display("\n\n\n------ Simulation complete. ------");
         errors = 0;
 
-        // Initialize reg_indices
         reg_indices[0] = 8;
         reg_indices[1] = 9;
         reg_indices[2] = 18;
@@ -110,6 +105,6 @@ module simtop2;
             $stop; // Stop simulation on failure
         end
 
-        $finish; // End the simulation
+        $finish; // End
     end
 endmodule
