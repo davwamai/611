@@ -38,8 +38,6 @@ module simtop;
 		.HEX7(HEX7)
 	);
 
-  logic [31:0] io0, io2;
-
   // pulse reset (active low)
 	initial begin
 		KEY <= 4'he;
@@ -51,7 +49,7 @@ module simtop;
 	always begin
 		clk <= 1'b0; #5;
 		clk <= 1'b1; #5;
-    $display("Register 6: %8h", dut.cpu_inst.rf_inst.mem[6]);
+    // $display("Register 6: %8h", dut.cpu_inst.rf_inst.mem[6]);
 	end
 	
 	// assign simulated switch values
