@@ -78,11 +78,11 @@ module simtop2;
 
     // Task to check results
     task check_results;
-        int errors = 0;
+        automatic int errors = 0;
         begin
-            int reg_indices[] = '{8, 9, 18, 19, 20, 21};
+            automatic int reg_indices[] = '{8, 9, 18, 19, 20, 21};
             foreach (reg_indices[i]) begin
-                int idx = reg_indices[i];
+                automatic int idx = reg_indices[i];
                 if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
                     $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d", 
                              idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
