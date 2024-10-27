@@ -59,12 +59,12 @@ module simtop2;
             expected_regs[i] = 32'd0;
         end
         // Set expected values
-        expected_regs[21] = 4'b6;
-        expected_regs[20] = 4'b5;
-        expected_regs[19] = 4'b4;
-        expected_regs[18] = 4'b3;
-        expected_regs[9]  = 4'b2;
-        expected_regs[8]  = 4'b1;
+        expected_regs[21] = 6;
+        expected_regs[20] = 5;
+        expected_regs[19] = 4;
+        expected_regs[18] = 3;
+        expected_regs[9]  = 2;
+        expected_regs[8]  = 1;
     end
 
     // Wait for program completion and check results
