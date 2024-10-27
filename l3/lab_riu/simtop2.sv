@@ -73,25 +73,23 @@ module simtop2;
     final begin
         $display("------ Simulation complete. ------");
         automatic int errors = 0;
-        begin
-            automatic int reg_indices[] = {8, 9, 18, 19, 20, 21};
-            foreach (reg_indices[i]) begin
-                automatic int idx = reg_indices[i];
-                if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
-                    $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d",
-                             idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
-                    errors++;
-                end else begin
-                    $display("Register x%0d OK. Value: %0d", idx, dut.cpu_inst.rf_inst.mem[idx]);
-                end
-            end
-
-            if (errors == 0) begin
-                $display("TEST PASSED: All register values are correct.");
+        automatic int reg_indices[] = '{8, 9, 18, 19, 20, 21};
+        foreach (reg_indices[i]) begin
+            automatic int idx = reg_indices[i];
+            if (dut.cpu_inst.rf_inst.mem[idx] !== expected_regs[idx]) begin
+                $display("ERROR: Register x%0d mismatch. Expected: %0d, Got: %0d",
+                          idx, expected_regs[idx], dut.cpu_inst.rf_inst.mem[idx]);
+                errors++;
             end else begin
-                $display("TEST FAILED: %0d errors detected.", errors);
-                $stop; // Stop simulation on failure
+                $display("Register x%0d OK. Value: %0d", idx, dut.cpu_inst.rf_inst.mem[idx]);
             end
+        end
+
+        if (errors == 0) begin
+            $display("TEST PASSED: All register values are correct.");
+        end else begin
+            $display("TEST FAILED: %0d errors detected.", errors);
+            $stop; // Stop simulation on failure
         end
     end
 endmodule
