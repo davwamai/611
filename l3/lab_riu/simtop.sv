@@ -49,14 +49,19 @@ module simtop;
 	always begin
 		clk <= 1'b0; #5;
 		clk <= 1'b1; #5;
-    $display("Register 6: %8h", dut.cpu_inst.rf_inst.mem[6]);
 	end
 	
 	// assign simulated switch values
 	assign SW = 18'd12345;
 
   final begin
-      $display("Register 6: %8h", dut.cpu_inst.rf_inst.mem[6]);
+      // testcase bin2dec
+      $display("D5: %8d", dut.cpu_inst.rf_inst.mem[21]);
+      $display("D4: %8d", dut.cpu_inst.rf_inst.mem[20]);
+      $display("D3: %8d", dut.cpu_inst.rf_inst.mem[19]);
+      $display("D2: %8d", dut.cpu_inst.rf_inst.mem[18]);
+      $display("D1: %8d", dut.cpu_inst.rf_inst.mem[9]);
+      $display("D0: %8d", dut.cpu_inst.rf_inst.mem[8]);
   end
 
 endmodule

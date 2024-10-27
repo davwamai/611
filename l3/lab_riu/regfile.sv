@@ -25,7 +25,6 @@ end
 
 always_comb begin
 	// $monitor("reg 6: %8h", mem[6]);
-  // $monitor("D5: %8d, D4: %8d, D3: %8d, D2: %8d, D1: %8d, D0: %8d", mem[21], mem[20], mem[19], mem[18], mem[9], mem[8]); // testcase bin2dec
 	// $monitor("reg 5: %8h", mem[5]);
 	// $monitor("writeaddr: %8h, we: %1h", writeaddr, we);
 
