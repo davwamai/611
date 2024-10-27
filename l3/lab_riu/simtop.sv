@@ -51,6 +51,7 @@ module simtop;
 	always begin
 		clk <= 1'b0; #5;
 		clk <= 1'b1; #5;
+    $display("Register 6: %8h", dut.cpu_inst.rf_inst.mem[6]);
 	end
 	
 	// assign simulated switch values
