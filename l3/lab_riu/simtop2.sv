@@ -72,10 +72,6 @@ module simtop2;
 
     final begin
         $display("------ Simulation complete. ------");
-        check_results();
-    end
-
-    task check_results;
         automatic int errors = 0;
         begin
             automatic int reg_indices[] = '{8, 9, 18, 19, 20, 21};
@@ -97,7 +93,6 @@ module simtop2;
                 $stop; // Stop simulation on failure
             end
         end
-    endtask
-
+    end
 endmodule
 
