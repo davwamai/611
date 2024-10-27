@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module sim_top;
+module mSIMTOP;
 
   logic clk;
   logic rst_n;
