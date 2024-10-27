@@ -1,50 +1,64 @@
-`timescale 1ns / 1ps
+/* Copyright 2020 Jason Bakos, Philip Conrad, Charles Daniels */
 
-module mSIMTOP;
+/* Top-level module for CSCE611 RISC-V CPU, for running under simulation.  In
+ * this case, the I/Os and clock are driven by the simulator. */
 
-  logic clk;
-  logic rst_n;
-  logic [31:0] io0_in;
-  logic [31:0] io2_out;
+module simtop;
 
-  logic [6:0] HEX0;
-  logic [6:0] HEX1;
-  logic [6:0] HEX2;
-  logic [6:0] HEX3;
-  logic [6:0] HEX4;
-  logic [6:0] HEX5;
-  logic [6:0] HEX6;
-  logic [6:0] HEX7;
+	logic clk;
+	logic [6:0] HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,HEX6,HEX7;
+	logic [3:0] KEY;
+	logic [17:0] SW;
 
-  hexdriver hd0 (.val(io2_out[3:0]), .HEX(HEX0));
-  hexdriver hd1 (.val(io2_out[7:4]), .HEX(HEX1));
-  hexdriver hd2 (.val(io2_out[11:8]), .HEX(HEX2));
-  hexdriver hd3 (.val(io2_out[15:12]), .HEX(HEX3));
-  hexdriver hd4 (.val(io2_out[19:16]), .HEX(HEX4));
-  hexdriver hd5 (.val(io2_out[23:20]), .HEX(HEX5));
-  hexdriver hd6 (.val(io2_out[27:24]), .HEX(HEX6));
-  hexdriver hd7 (.val(io2_out[31:28]), .HEX(HEX7));
+	top dut
+	(
+		//////////// CLOCK //////////
+		.CLOCK_50(clk),
+		.CLOCK2_50(),
+	  .CLOCK3_50(),
 
-  cpu dut (
-    .clk(clk),
-    .rst_n(rst_n),
-    .io0_in(io0_in),
-    .io2_out(io2_out)
-  );
+		//////////// LED //////////
+		.LEDG(),
+		.LEDR(),
 
-  // 20ns period (50MHz clock)
-  always #10 clk = ~clk;
+		//////////// KEY //////////
+		.KEY(KEY),
 
-  initial begin
-    clk = 0;
-    rst_n = 0;
-    io0_in = 32'd12345;
+		//////////// SW //////////
+		.SW(SW),
 
-    #20;
-    rst_n = 1;
+		//////////// SEG7 //////////
+		.HEX0(HEX0),
+		.HEX1(HEX1),
+		.HEX2(HEX2),
+		.HEX3(HEX3),
+		.HEX4(HEX4),
+		.HEX5(HEX5),
+		.HEX6(HEX6),
+		.HEX7(HEX7)
+	);
 
-    #2550;
-    $display("Register 6: %8h", dut.rf_inst.mem[6]);
+  logic [31:0] io0, io2;
 
-    $finish;
-  end
+  // pulse reset (active low)
+	initial begin
+		KEY <= 4'he;
+		#10;
+		KEY <= 4'hf;
+	end
+	
+	// drive clock
+	always begin
+		clk <= 1'b0; #5;
+		clk <= 1'b1; #5;
+	end
+	
+	// assign simulated switch values
+	assign SW = 18'd12345;
+
+  #2550;
+  $display("Register 6: %8h", dut.cpu_int.rf_inst.mem[6]);
+
+  $finish;
+
+endmodule
