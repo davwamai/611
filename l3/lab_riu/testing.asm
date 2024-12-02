@@ -3,7 +3,7 @@
     .globl _start
 
 _start:
-    # Load the input number N into t0
+    # load the input number N into t0
     # li t0, 123456
     csrrw t0, 0xf00, zero
 
@@ -26,10 +26,10 @@ _start:
     mul t0, t0, t2
     mul t0, t0, t2
 
-    # Load multiplier M into t1
+    # load multiplier M into t1
     li t1, 0x1999999A  # M = 0x1999999A
 
-    # Initialize decimal digits D5 to D0 to zero
+    # decimal digits D5 to D0 to zero
     li s0, 0   # D5
     li s1, 0   # D4
     li s2, 0   # D3
@@ -41,22 +41,22 @@ _start:
     li t4, 10  # t4 = 10
 
     ###############################################
-    # Extract D5
+    # extract D5
     ###############################################
 
-    # Multiply N by M and get upper 32 bits
+    # multiply N by M and get upper 32 bits
     mulhu t3, t0, t1   # t3 = upper 32 bits of N * M
 
-    # Compute N = N - (Q * 10), where Q = t3
+    # compute N = N - (Q * 10), where Q = t3
     mul t5, t3, t4
     sub t6, t0, t5
 
-    # Store the digit
+    # store the digit
     add s0, zero, t6   # D5 = t6
     add t0, zero, t3
 
     ###############################################
-    # Extract D4
+    # extract D4
     ###############################################
 
     mulhu t3, t0, t1
@@ -66,7 +66,7 @@ _start:
     add t0, zero, t3
 
     ###############################################
-    # Extract D3
+    # extract D3
     ###############################################
 
     mulhu t3, t0, t1
@@ -76,7 +76,7 @@ _start:
     add t0, zero, t3
 
     ###############################################
-    # Extract D2
+    # extract D2
     ###############################################
 
     mulhu t3, t0, t1
@@ -86,7 +86,7 @@ _start:
     add t0, zero, t3
 
     ###############################################
-    # Extract D1
+    # extract D1
     ###############################################
 
     mulhu t3, t0, t1
@@ -96,32 +96,32 @@ _start:
     add t0, zero, t3
 
     ###############################################
-    # Extract D0
+    # extract D0
     ###############################################
 
-    # At this point, N is less than 10
+    # at this point, N is less than 10
     add s5, zero, t0   # D0 = N
-    
-    # Make some room to shift in result
+
+    # make some room to shift in result
     add t0, zero, zero
-    
-    # Pray
+
+    # pray
     xor t0, t0, s5
     slli t0, t0, 4
-    
+
     xor t0, t0, s4
     slli t0, t0, 4
-    
+
     xor t0, t0, s3
     slli t0, t0, 4
-    
+
     xor t0, t0, s2
     slli t0, t0, 4
-    
+
     xor t0, t0, s1
     slli t0, t0, 4
-    
+
     xor t0, t0, s0
-    
-    # Send to GPIO_out
+
+    # send to GPIO_out
     csrrw zero, 0xf02, t0 

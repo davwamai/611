@@ -11,7 +11,6 @@ module cpu(input logic clk, input logic rst_n, input logic [31:0] io0_in, output
     logic [1:0] regsel_EX, regsel_WB;
     logic alusrc_EX, GPIO_we, regwrite_EX, regwrite_WB;
 
-    // regfile instance
     regfile rf_inst (
       .clk(clk),
       .we(regwrite_WB),        // input comes from control unit regwrite_EX -> reg -> we
